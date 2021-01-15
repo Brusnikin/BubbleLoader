@@ -10,17 +10,35 @@ import UIKit
 
 class ViewController: UIViewController {
 
-	let loader = BubbleLoader()
+    private lazy var button: EllipsisButton = {
+        let button = EllipsisButton()
+        button.hidesWhenStopped = false
+        return button
+    }()
 
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		loader.center = CGPoint(x: view.center.x - loader.viewWidth() / 2, y: view.center.y)
-		view.addSubview(loader)
-	}
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		loader.start()
-	}
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = .systemBackground
+        } else {
+            view.backgroundColor = .white
+        }
+        view.addSubview(button)
+        button.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        button.startAnimating()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [self] in
+            button.stopAnimating()
+        }
+    }
 }
 
